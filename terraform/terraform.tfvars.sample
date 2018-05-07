@@ -1,0 +1,10 @@
+# credentials
+aws_access_key = "xxxxxxxx"
+
+aws_secret_key = "xxxxxxxx"
+
+aws_key_path = "/my/pemfile/path"
+
+aws_key_name = "keyname"
+
+my_ip = "1.2.3.4/32"

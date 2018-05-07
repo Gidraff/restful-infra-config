@@ -1,0 +1,24 @@
+---
+  - name: setup nat instance
+    hosts: all
+    remote_user: ubuntu
+    become: yes
+    become_method: sudo
+    gather_facts: no
+
+    roles:
+      - nat
+    
+    pre_tasks:
+      - name: Update apt cache if it has been more than 1hr since the last update
+        apt: update_cache=yes cache_valid_time=3600
+        
+      - name: Upgrade all software 
+        apt: 
+          upgrade: dist
+
+      - name: Install python2.7
+        apt: name=python2.7 state=present
+      
+      - name: Install pip for python
+        apt: name=python-pip state=present

@@ -1,0 +1,10 @@
+---
+  - name: setup database instance
+    hosts: all
+    remote_user: ubuntu
+    become: yes
+    become_method: sudo
+    gather_facts: no
+
+    roles:
+      - db

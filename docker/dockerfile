@@ -1,0 +1,14 @@
+FROM ubuntu:16.04
+
+USER root
+RUN apt-get update && \
+    apt-get install -y postgresql postgresql-contrib
+
+RUN apt-get install -y git && \
+    apt-get install -y python3 python-pip && \
+    apt-get install -y sqlite3 libsqlite3-dev
+
+COPY ./pg_hba.conf  /tmp
+RUN cat /tmp/pg_hba.conf >  /etc/postgresql/9.5/main/pg_hba.conf
+RUN /etc/init.d/postgresql start
+EXPOSE 5432

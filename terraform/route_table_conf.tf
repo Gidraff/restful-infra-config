@@ -12,6 +12,11 @@ resource "aws_route_table" "public-rt1" {
   }
 }
 
+resource "aws_route_table_association" "public-sub-association" {
+  subnet_id      = "${aws_subnet.public-subnet.id}"
+  route_table_id = "${aws_route_table.public-rt1.id}"
+}
+
 resource "aws_route_table" "private-rt2" {
   vpc_id = "${aws_vpc.rest-vpc.id}"
 
@@ -25,19 +30,6 @@ resource "aws_route_table" "private-rt2" {
   }
 }
 
-# Associate route table to rest-vpc
-resource "aws_main_route_table_association" "main-rt-association" {
-  vpc_id         = "${aws_vpc.rest-vpc.id}"
-  route_table_id = "${aws_route_table.public-rt1.id}"
-}
-
-# Associate route table to public subnet
-resource "aws_route_table_association" "public-sub-association" {
-  subnet_id      = "${aws_subnet.public-subnet.id}"
-  route_table_id = "${aws_route_table.public-rt1.id}"
-}
-
-# Associate route table to private subnet
 resource "aws_route_table_association" "private-sub-association" {
   subnet_id      = "${aws_subnet.private-subnet.id}"
   route_table_id = "${aws_route_table.private-rt2.id}"

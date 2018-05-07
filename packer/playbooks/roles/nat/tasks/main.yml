@@ -1,0 +1,91 @@
+---
+- name: Copy sysctl.conf (allow ip forwarding)
+  copy: 
+    src: /Users/gidraffkaranja/Dops/python/restful-infra-config/packer/playbooks/roles/files/sysctl.conf
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Overwrite sysctl.conf on host
+  shell: |
+          bash -c "sudo cat /tmp/sysctl.conf > /etc/sysctl.conf"
+  become: yes
+  become_method: sudo
+
+- name: Masquerade all egress packages as coming from NAT Gateway
+  shell: |
+          bash -c "sudo iptables -t nat -A POSTROUTING -o ens4 -j MASQUERADE"
+  become: yes
+  become_method: sudo
+
+- name: Copy nat.conf (enables ip forwarding and disables send_redirects)
+  copy: 
+    src: /Users/gidraffkaranja/Dops/python/restful-infra-config/packer/playbooks/roles/files/nat.conf
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Apply copy(nat.conf)
+  shell: |
+          bash -c "sudo mv /tmp/nat.conf  /etc/sysctl.d/"
+  become: yes
+  become_method: sudo
+
+- name: Load changes
+  shell: |
+          bash -c "sudo sysctl -p /etc/sysctl.d/nat.conf"
+  become: yes
+  become_method: sudo
+
+
+- name: Copy iptables.rules file (enables This enables ip masquerading)
+  copy: 
+    src: /Users/gidraffkaranja/Dops/python/restful-infra-config/packer/playbooks/roles/files/iptables.rules
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+
+# - name: Apply copy(iptables.rules)
+#   shell: |
+#           bash -c "sudo mv /tmp/iptables.rules  /etc/"
+#   become: yes
+#   become_method: sudo
+
+- name: Add iptables rules
+  shell: |
+          bash -c "cat <<EOF > /etc/iptables.rules
+          *nat
+          :PREROUTING ACCEPT [0:0]
+          :INPUT ACCEPT [0:0]
+          :OUTPUT ACCEPT [0:0]
+          :POSTROUTING ACCEPT [0:0]
+          -A POSTROUTING -o eth0 -j MASQUERADE
+          COMMIT
+          EOF"
+  become: yes
+  become_method: sudo
+
+- name: Make the rules live 
+  shell: |
+          bash -c "sudo /sbin/iptables-restore < /etc/iptables.rules"
+  become: yes
+  become_method: sudo
+
+
+- name: Copy iptables_load(makes sure rules are loaded automatically on restart)
+  copy: 
+    src: /Users/gidraffkaranja/Dops/python/restful-infra-config/packer/playbooks/roles/files/iptables_load
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Apply copy(iptables_load)
+  shell: |
+          bash -c "sudo mv /tmp/iptables_load  /etc/network/if-pre-up.d/"
+  become: yes
+  become_method: sudo
+

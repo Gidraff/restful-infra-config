@@ -5,4 +5,6 @@ resource "aws_internet_gateway" "igw" {
   tags {
     Name = "rest-igw"
   }
+
+  depends_on = ["aws_vpc.rest-vpc"]
 }

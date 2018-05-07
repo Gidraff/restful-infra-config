@@ -1,0 +1,10 @@
+host ansible_ssh_host=1.2.3.4 ansible_ssh_user=exampleuser ansible_ssh_private_key_file=keyname
+
+[testserver]
+host
+
+
+
+
+
+
