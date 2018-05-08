@@ -1,11 +1,11 @@
 # Restful-infra-config(IaC)
 ----------------------------------------------
-#####Here I show a simple implementation of Infrastructure as Code.
+##### Here I show a simple implementation of Infrastructure as Code.
 
 ###### Technology used:
-* Packer : Used  to build packer images for my aws servers
+* Packer : to build packer images.
 
-* Ansible : A configuration manages tool. I have used ansible to provision my packer images.
+* Ansible : A configuration management tool. I have used ansible as a provision for my packer images.
 
 * Docker: Containerization engine. I have used docker to build my docker image to be run by jenkins as a build agent on jenkins build. 
 
